@@ -28,7 +28,11 @@ export const INJECTED_BEFORE = `(function(){
       };
       apply();
       var s=document.createElement('style');
-      s.textContent='html,body{background:#080B0F !important}';
+      /* Scope the anti-flash background to the SCREEN only. Without this media
+         guard the rule is picked up by the print-HTML serialiser (collectCss),
+         darkening the PDF paper to near-black while the text keeps its original
+         dark colour — the reported "blank / unreadable dark-mode PDF". */
+      s.textContent='@media screen{html,body{background:#080B0F !important}}';
       (document.head||document.documentElement).appendChild(s);
       document.addEventListener('DOMContentLoaded',apply);
     }
@@ -96,7 +100,23 @@ export const INJECTED_MAIN = `(function(){
     for(var n=0;n<live.length;n++){ live[n].removeAttribute('data-psg-i'); }
     var head=clone.querySelector('head')||clone;
     var st=document.createElement('style'); st.textContent=collectCss(); head.appendChild(st);
-    var dt=document.documentElement.getAttribute('data-theme')||'original';
+    /* Force a neutral LIGHT appearance for the PDF regardless of the on-screen
+       theme. The dark skin is scoped to @media screen, but the anti-flash inline
+       backgrounds (and some print engines that render using screen media) can
+       still darken the page — which made dark-mode PDFs come out black/blank.
+       We strip the dark theme marker + inline dark backgrounds from the clone and
+       append a last-wins normaliser so the paper is always white with readable
+       text. Business content, formulas and layout are untouched. */
+    try{
+      clone.setAttribute('data-theme','original');
+      if(clone.style){ clone.style.background=''; clone.style.backgroundColor=''; }
+      var cbody=clone.querySelector('body');
+      if(cbody){ cbody.setAttribute('data-theme','original'); if(cbody.style){ cbody.style.background=''; cbody.style.backgroundColor=''; } }
+    }catch(e){}
+    var norm=document.createElement('style');
+    norm.textContent='html,body{background:#fff !important;background-image:none !important;color-scheme:light !important;-webkit-text-fill-color:initial}';
+    head.appendChild(norm);
+    var dt='original';
     return '<!DOCTYPE html><html data-theme="'+dt+'" lang="id">'+clone.innerHTML+'</html>';
   }
 
