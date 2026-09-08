@@ -1,0 +1,30 @@
+{
+  "summary": "Frontend-only smoke test on web preview for PSG WebView wrapper. All 6 acceptance criteria from the review request PASSED: (1) Expo app loads without crash and no ErrorBoundary 'Something went wrong', (2) the ORIGINAL PWA is displayed inside the iframe (not a rebuild) — the very first screen is the access gate 'AKSES INTERNAL / Insurance Hub' with PSG logo and the fields 'Nama Tenaga Pemasar', 'Kode Agen', 'Kode Akses' plus the 'MASUK' button, (3) the red PSG splash overlay disappears (not stuck; overlayGone becomes true after ~800ms via onLoadEnd safety-net), (4) all offline webapp assets return 200 (index.html, src/app.js, src/styles.css, vendor/qrcode.js), (5) responsive check on phone (390x844) and tablet (820x1180) shows 0px horizontal overflow inside iframe and the access gate stays centered/legible, (6) no fatal console errors — only benign RN-Web warnings ('props.pointerEvents is deprecated' and 'useNativeDriver is not supported' — both expected on web). Login was NOT attempted (no code available, per instructions).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": [
+      {"component": "Animated.View overlay (index.tsx line ~249)", "issue": "Uses deprecated `pointerEvents` prop on <Animated.View> which triggers 'props.pointerEvents is deprecated. Use style.pointerEvents' warning in RN 0.74+. Reference: /app/frontend/app/index.tsx:249. Non-blocking but should be migrated to style.pointerEvents."}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "(Nit) Migrate pointerEvents prop to style.pointerEvents on the splash Animated.View at /app/frontend/app/index.tsx:249 to silence the RN deprecation warning.",
+    "(Info) The 'useNativeDriver is not supported' warning only occurs in the web preview (no RCTAnimation on RN-Web). This is expected and will not appear on the Android native build. No action needed."
+  ],
+  "critical_code_review_comments": [
+    "psg-webview.web.tsx uses window.eval on the iframe contentWindow to inject INJECTED_MAIN — this works only because /webapp is same-origin (served by Metro). If ever hosted cross-origin, injection will silently fail (currently swallowed by try/catch). Fine for the current setup, but worth documenting.",
+    "Splash reveal correctly relies on both the 'ready' bridge message AND onLoadEnd + 3.5s hard safety-net (index.tsx). Good defensive design — verified splash overlay actually goes away on web preview.",
+    "getWebAppSource() on web returns `${origin}/webapp/index.html`; verified 200 for the entry file and the 3 critical sub-assets referenced in the review (app.js, styles.css, vendor/qrcode.js). No CORS/mixed-content issues on the preview URL.",
+    "Native features (expo-print PDF, SAF save, Clipboard native, Android hardware Back via BackHandler) are correctly gated behind Platform.OS checks and unreachable on web preview — cannot and should not be tested here (per review note)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (skipped per request)", "frontend": "100% (6/6 acceptance checks passed)"},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Web preview URL: https://selling-tools-mobile.preview.emergentagent.com. In the web preview, PsgWebView is rendered as an <iframe data-testid=\"psg-webview\"> pointing at /webapp/index.html (same-origin), so the real PWA's access gate renders directly. testIDs on the outer shell: psg-root, psg-splash, psg-webview, psg-load-error, psg-busy, psg-toast, save-backdrop, save-filename-input, save-final-name, save-share-button, save-folder-button, save-cancel-button. Access-gate DOM is inside the iframe (use content_frame()) — the login codes are unknown to the agent so post-login flows cannot be tested here; they require a real Android build. Do not try to brute-force codes.",
+  "rca_of_issue": "N/A — no bugs reproduced. All review-request acceptance criteria met on the web preview."
+}
