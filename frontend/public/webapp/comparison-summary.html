@@ -58,6 +58,13 @@ body{background:#f6f7f9}.summary-shell{max-width:1500px;margin:auto;padding:24px
 (function(){try{var t=localStorage.getItem('insuranceHub.theme.v3');
 if(t!=='dark'&&t!=='original')t='original';
 document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<style media="print">
+  /* Cetak netral: latar putih, teks terbaca, tabel terlihat (Light & Dark). */
+  html,body{background:#fff!important;color:#111!important}
+  body[data-theme="dark"]{background:#fff!important;color:#111!important}
+  body *{-webkit-text-fill-color:initial!important}
+  table,th,td{border-color:#999!important}
+</style>
 </head><body><main class="summary-shell"><img class="print-logo" src="assets/logo-psg.png" alt="PSG — Patriot Shining Generation">
 <div class="top"><div><div class="title">Ringkasan Perbandingan</div><div class="sub" id="customer"></div></div><div class="actions"><button class="aksi" onclick="window.print()">🖨 Cetak / PDF</button><button class="sakelar" type="button" id="cmpHome">⌂ Home</button><button class="sakelar" type="button" id="cmpBack">← Kembali</button><button class="logout-btn" type="button" id="cmpLogout">Logout</button></div></div>
 <div class="targets section" id="targets"></div>

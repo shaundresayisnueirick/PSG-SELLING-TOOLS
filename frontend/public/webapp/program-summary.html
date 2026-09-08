@@ -120,6 +120,13 @@ body{background:#f6f7f9}.shell{max-width:1500px;margin:auto;padding:24px}.brand-
 (function(){try{var t=localStorage.getItem('insuranceHub.theme.v3');
 if(t!=='dark'&&t!=='original')t='original';
 document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<style media="print">
+  /* Cetak netral: latar putih, teks terbaca, tabel terlihat (Light & Dark). */
+  html,body{background:#fff!important;color:#111!important}
+  body[data-theme="dark"]{background:#fff!important;color:#111!important}
+  body *{-webkit-text-fill-color:initial!important}
+  table,th,td{border-color:#999!important}
+</style>
 </head><body><main class="shell"><div class="brand-top"><img src="assets/logo-psg.png" alt="PSG"></div><img class="print-logo" src="assets/logo-psg.png" alt="PSG — Patriot Shining Generation">
 <header class="head"><div><div class="title">Program Perlindungan Nasabah</div><div class="name" id="whoName">Nasabah</div><div class="sub" id="whoMeta"></div></div><div class="actions"><button class="aksi" type="button" onclick="window.print()">🖨 Cetak / PDF</button><button class="aksi" type="button" id="programSimpanLibrary">📚 Simpan ke Library</button><button class="sakelar" type="button" id="programHome">⌂ Home</button><button class="sakelar" type="button" id="programBack">← Kembali</button><button class="logout-btn" type="button" id="programLogout">Logout</button></div></header>
 <section class="section box"><h2 class="targets-title">Tujuan Perlindungan</h2><div class="targets" id="targets"></div><div class="selected-products" id="selectedProducts" style="margin-top:12px"></div></section>

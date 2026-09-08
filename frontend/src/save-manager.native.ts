@@ -80,8 +80,22 @@ function manualB64(str: string): string {
 // Render serialized HTML to a PDF (Android's native HTML print engine honours
 // @media print + page-break CSS, so multi-page output is not cut off).
 export async function htmlToPdfBase64(html: string): Promise<string> {
+  // Anti-blank guard #1: pastikan ada konten yang akan dicetak (bukan HTML kosong).
+  const textOnly = String(html || "").replace(/<[^>]*>/g, "").replace(/\s+/g, "");
+  if (!html || textOnly.length < 1) {
+    throw new Error("Tidak ada konten untuk dicetak");
+  }
   const { uri } = await Print.printToFileAsync({ html, base64: false });
+  // Anti-blank guard #2: file harus benar-benar dibuat dan > 0 byte.
+  const info = await FS.getInfoAsync(uri, { size: true } as any);
+  if (!info.exists || !(typeof info.size === "number" && info.size > 0)) {
+    throw new Error("PDF kosong (0 byte)");
+  }
   const b64 = await FS.readAsStringAsync(uri, { encoding: FS.EncodingType.Base64 });
+  // Anti-blank guard #3: base64 tidak kosong / tidak terlalu kecil untuk PDF valid.
+  if (!b64 || b64.length < 100) {
+    throw new Error("PDF kosong");
+  }
   return b64;
 }
 

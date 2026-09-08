@@ -230,6 +230,7 @@
           <label class="insurance-access-label" for="insuranceAccessCode">
             Kode Akses
           </label>
+          <div class="insurance-pass-wrap">
           <input id="insuranceAccessCode"
                  type="password"
                  inputmode="text"
@@ -238,6 +239,9 @@
                  spellcheck="false"
                  placeholder="Masukkan kode akses"
                  aria-describedby="insuranceAccessError">
+          <button type="button" id="insuranceAccessToggle" class="insurance-pass-toggle"
+                  aria-label="Lihat kata sandi" aria-pressed="false" tabindex="0">👁</button>
+          </div>
           <label class="insurance-remember">
             <input id="insuranceRememberDevice" type="checkbox" checked>
             <span class="insurance-kotak" aria-hidden="true"></span>
@@ -258,6 +262,19 @@
     const form=document.getElementById('insuranceAccessForm');
     const input=document.getElementById('insuranceAccessCode');
     const error=document.getElementById('insuranceAccessError');
+
+    /* Show/Hide kata sandi (UI saja — tidak mengubah value/auth). */
+    const toggle=document.getElementById('insuranceAccessToggle');
+    if(toggle && input){
+      toggle.addEventListener('click',function(){
+        const tersembunyi = input.getAttribute('type')==='password';
+        input.setAttribute('type', tersembunyi ? 'text' : 'password');
+        toggle.textContent = tersembunyi ? '🙈' : '👁';
+        toggle.setAttribute('aria-pressed', tersembunyi ? 'true' : 'false');
+        toggle.setAttribute('aria-label', tersembunyi ? 'Sembunyikan kata sandi' : 'Lihat kata sandi');
+        try{ input.focus(); }catch(_){}
+      });
+    }
 
     form.addEventListener('submit',async function(ev){
       ev.preventDefault();

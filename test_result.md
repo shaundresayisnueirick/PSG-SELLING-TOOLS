@@ -302,3 +302,17 @@ agent_communication:
       Files changed: src/psg-bridge.ts, src/webapp-loader.native.ts, public/webapp/src/styles.css,
       src/webapp/webapp-bundle.json. Note: #1 final PDF output is only fully verifiable on the built
       APK (expo-print) — web preview stubs PDF generation; validated via print-media emulation instead.
+
+  - agent: "main"
+    message: |
+      IMPLEMENTED 3 bug groups (audit-approved). Files changed:
+      - public/webapp/src/access-gate.js (password show/hide eye toggle, UI only)
+      - public/webapp/src/dob-hint.js (NEW: toggle .is-empty on empty date inputs)
+      - public/webapp/index.html (include dob-hint.js)
+      - public/webapp/src/styles.css (pass toggle styles; DOB .is-empty gray placeholder light+dark; @media print isolation for Library Detail #libraryDetailModal)
+      - public/webapp/comparison-summary.html + program-summary.html (media=print neutral white/black style)
+      - src/psg-bridge.ts (doPrint dispatches beforeprint/afterprint around serialize)
+      - src/save-manager.native.ts (htmlToPdfBase64 anti-blank guards: non-empty html, file size>0, base64>0)
+      - app/index.tsx (print case: skip SaveModal if empty; error toast)
+      - src/webapp/webapp-bundle.json rebuilt; webapp-loader VERSION 37.5-apk-3
+      Self-check: password toggle verified on login (type password<->text, value kept, icon inside field). PENDING testing_agent verification for full matrix.

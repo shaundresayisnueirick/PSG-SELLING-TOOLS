@@ -138,18 +138,30 @@ export default function Index() {
           if (msg.url) Linking.openURL(String(msg.url)).catch(() => {});
           break;
         case "print":
-          setBusy("Membuat PDF…");
-          (async () => {
-            try {
-              const base64 = await htmlToPdfBase64(String(msg.html || ""));
-              setBusy(null);
-              const name = ensureExt(sanitizeFilename(msg.title || "Dokumen"), "pdf");
-              openSaveSheet({ base64, mime: "application/pdf", ext: "pdf", name });
-            } catch {
-              setBusy(null);
-              showToast("Gagal membuat PDF");
+          {
+            const html = String(msg.html || "");
+            // Anti-blank guard: jangan buka SaveModal bila tidak ada konten.
+            if (html.replace(/<[^>]*>/g, "").replace(/\s+/g, "").length < 1) {
+              showToast("Tidak ada konten untuk dicetak");
+              break;
             }
-          })();
+            setBusy("Membuat PDF…");
+            (async () => {
+              try {
+                const base64 = await htmlToPdfBase64(html);
+                setBusy(null);
+                if (!base64) {
+                  showToast("Gagal membuat PDF");
+                  return;
+                }
+                const name = ensureExt(sanitizeFilename(msg.title || "Dokumen"), "pdf");
+                openSaveSheet({ base64, mime: "application/pdf", ext: "pdf", name });
+              } catch {
+                setBusy(null);
+                showToast("Gagal membuat PDF");
+              }
+            })();
+          }
           break;
         case "download": {
           const { base64, mime } = dataUrlToParts(String(msg.dataUrl || ""));

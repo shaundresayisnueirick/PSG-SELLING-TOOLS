@@ -5533,3 +5533,42 @@ html.psg-library-summary-open,html.psg-library-summary-open body{overflow:hidden
   --accent: var(--emas);
   --sig-shadow-sm: var(--shadow-sm, 0 2px 8px rgba(0,0,0,.08));
 }
+
+/* ===== Login: tombol show/hide kata sandi (UI saja) ===== */
+.insurance-pass-wrap{position:relative;display:block}
+.insurance-pass-wrap #insuranceAccessCode{padding-right:46px!important;width:100%;box-sizing:border-box}
+.insurance-pass-toggle{position:absolute;top:50%;right:8px;transform:translateY(-50%);
+  width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+  border:0;background:transparent;cursor:pointer;font-size:18px;line-height:1;
+  border-radius:8px;color:#17372F;opacity:.85;padding:0;z-index:2}
+.insurance-pass-toggle:hover,.insurance-pass-toggle:focus{opacity:1;outline:none;background:rgba(0,0,0,.06)}
+body[data-theme="dark"] .insurance-pass-toggle{color:#E7E3D8}
+body[data-theme="dark"] .insurance-pass-toggle:hover,
+body[data-theme="dark"] .insurance-pass-toggle:focus{background:rgba(255,255,255,.10)}
+
+/* ===== Tanggal lahir: placeholder DD/MM/YYYY abu-abu saat kosong ===== */
+input[type="date"].is-empty::-webkit-datetime-edit,
+input[type="date"].is-empty::-webkit-datetime-edit-fields-wrapper,
+input[type="date"].is-empty::-webkit-datetime-edit-text,
+input[type="date"].is-empty::-webkit-datetime-edit-day-field,
+input[type="date"].is-empty::-webkit-datetime-edit-month-field,
+input[type="date"].is-empty::-webkit-datetime-edit-year-field{color:#9A9D96!important;opacity:1!important}
+body[data-theme="dark"] input[type="date"].is-empty::-webkit-datetime-edit,
+body[data-theme="dark"] input[type="date"].is-empty::-webkit-datetime-edit-fields-wrapper,
+body[data-theme="dark"] input[type="date"].is-empty::-webkit-datetime-edit-text,
+body[data-theme="dark"] input[type="date"].is-empty::-webkit-datetime-edit-day-field,
+body[data-theme="dark"] input[type="date"].is-empty::-webkit-datetime-edit-month-field,
+body[data-theme="dark"] input[type="date"].is-empty::-webkit-datetime-edit-year-field{color:#9AA0A6!important;opacity:1!important}
+
+/* ===== Library Detail: isolasi cetak (hanya item yang dibuka, bukan daftar) ===== */
+@media print{
+  body.psg-library-detail-open>*:not(#libraryDetailModal){display:none!important}
+  body.psg-library-detail-open #libraryDetailModal{position:static!important;display:block!important;background:#fff!important;padding:0!important;inset:auto!important}
+  body.psg-library-detail-open #libraryDetailModal .library-detail-card{height:auto!important;width:auto!important;display:block!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:#fff!important}
+  body.psg-library-detail-open #libraryDetailModal .library-detail-head{display:none!important}
+  body.psg-library-detail-open #libraryDetailModal .library-detail-body{overflow:visible!important;padding:0!important;background:#fff!important;color:#000!important}
+  body.psg-library-detail-open #libraryDetailModal .library-detail-body *{color:#000!important}
+  body.psg-library-detail-open #libraryDetailModal .library-detail-body td,
+  body.psg-library-detail-open #libraryDetailModal .library-detail-body th{border-color:#999!important}
+}
+

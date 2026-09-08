@@ -123,9 +123,17 @@ export const INJECTED_MAIN = `(function(){
   /* ---------- PRINT -> native PDF ---------- */
   function doPrint(title){
     try{
+      /* Jalankan lifecycle print seperti di browser: beberapa modul memasang
+         identitas konsultan & penanda pemecah halaman pada event beforeprint.
+         Bridge menggantikan window.print sehingga event ini tak terpicu sendiri. */
+      try{ window.dispatchEvent(new Event('beforeprint')); }catch(e){}
       var html=serializeForPrint();
       post({type:'print', title:String(title||document.title||'Dokumen'), html:html});
     }catch(e){ post({type:'error', message:'print: '+e}); }
+    finally{
+      /* Kembalikan DOM ke kondisi normal — jangan tertinggal di "print mode". */
+      try{ window.dispatchEvent(new Event('afterprint')); }catch(e){}
+    }
   }
   try{ window.print=function(){ doPrint(document.title); }; }catch(e){}
   window.Android=window.Android||{};
