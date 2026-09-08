@@ -265,3 +265,40 @@ agent_communication:
       Conclusion:
       Both reported problems (PROBLEM A and PROBLEM B) could NOT be reproduced.
       The application appears to be functioning correctly at mobile viewports with no garbled text or overflow issues.
+
+
+  - agent: "main"
+    message: |
+      ROOT-CAUSED & FIXED 4 issues (WebView PWA + native print bridge). Changes are minimal & targeted.
+
+      #1 PDF blank/dark (dark->black, light-from-dark->faint):
+        Root cause: (a) anti-flash style injected by bridge was `html,body{background:#080B0F!important}`
+        with NO media query -> it was collected into the print HTML and, being last in source order,
+        beat `@media print html,body{background:#fff}` -> black paper. (b) `data-theme="dark"` was kept
+        on the print clone, so `@media print body[data-theme="dark"]{...}` rules made text light -> faint.
+        expo-print DOES honor @media print (verified via 150dpi render of the light PDF = correct layout).
+        Fix (src/psg-bridge.ts): scope anti-flash bg to `@media screen`; in serializeForPrint() force
+        clone data-theme="original" (neutral), strip inline dark bg, and append a last-wins normaliser
+        `html,body{background:#fff!important;color-scheme:light;-webkit-text-fill-color:initial}`.
+        Print is now ALWAYS neutral light regardless of screen theme or Light->Dark->Light toggling.
+        Verified with Playwright print-media emulation from a dark screen: bodyBg rgb(255,255,255),
+        bodyColor rgb(17,17,17) -> readable.
+
+      #2 "Bandingkan -> Rincian" values broke one-char-per-line / piled up on the right (also = user's
+        "terpotong/menumpuk kanan" #3): value cells wrapped mid-number (global overflow-wrap:anywhere)
+        while labels were nowrap, squeezing the value cell to ~1 char.
+        Fix (public/webapp/src/styles.css, scoped @media screen): value cell white-space:nowrap +
+        right-align + overflow-wrap:normal; label allowed to wrap; narrow-screen column changed from
+        fixed 172px to content-sized (flex:0 0 auto;min-width:172px;max-width:280px). Print untouched
+        (uses its own @media print table layout). Verified: value height 57px->26px, single line,
+        no page overflow, .banding-gulir scrolls horizontally as designed. Works light & dark.
+
+      #4 (new, from user) empty date-of-birth placeholder invisible: styled
+        input[type=date]::-webkit-datetime-edit* to a visible color (light #17372F / dark #E7E3D8) so
+        the dd/mm/yyyy format hint shows when empty. Verified visible in both themes.
+
+      Native bundle rebuilt: public/webapp -> src/webapp/webapp-bundle.json (59 files, verified
+      unzippable by fflate); VERSION bumped 37.5-apk-1 -> 37.5-apk-2 so APK devices re-extract.
+      Files changed: src/psg-bridge.ts, src/webapp-loader.native.ts, public/webapp/src/styles.css,
+      src/webapp/webapp-bundle.json. Note: #1 final PDF output is only fully verifiable on the built
+      APK (expo-print) — web preview stubs PDF generation; validated via print-media emulation instead.

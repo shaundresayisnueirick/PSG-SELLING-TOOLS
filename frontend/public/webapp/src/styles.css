@@ -1817,6 +1817,20 @@ input,select,textarea{
   color:#17372F!important;
 }
 input::placeholder{color:#9A9D96!important}
+/* Tanggal lahir: tampilkan format dd/mm/yyyy sebagai petunjuk saat kosong.
+   Placeholder bawaan input[type=date] terlalu pudar sehingga tidak terlihat. */
+input[type="date"]::-webkit-datetime-edit,
+input[type="date"]::-webkit-datetime-edit-fields-wrapper,
+input[type="date"]::-webkit-datetime-edit-text,
+input[type="date"]::-webkit-datetime-edit-day-field,
+input[type="date"]::-webkit-datetime-edit-month-field,
+input[type="date"]::-webkit-datetime-edit-year-field{color:#17372F!important;opacity:1!important}
+body[data-theme="dark"] input[type="date"]::-webkit-datetime-edit,
+body[data-theme="dark"] input[type="date"]::-webkit-datetime-edit-fields-wrapper,
+body[data-theme="dark"] input[type="date"]::-webkit-datetime-edit-text,
+body[data-theme="dark"] input[type="date"]::-webkit-datetime-edit-day-field,
+body[data-theme="dark"] input[type="date"]::-webkit-datetime-edit-month-field,
+body[data-theme="dark"] input[type="date"]::-webkit-datetime-edit-year-field{color:#E7E3D8!important;opacity:1!important}
 input:focus,select:focus,textarea:focus{
   outline:2px solid rgba(199,163,91,.30)!important;
   border-color:#C7A35B!important;
@@ -2130,6 +2144,12 @@ table td{border-color:#E1DDD3!important}
 .banding-premi span{font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:#5B6573}
 .banding-premi b{font-size:16px}
 .banding-pilih{width:100%;margin-top:9px;justify-content:center}
+/* Nilai perbandingan tetap satu baris & rata kanan di layar supaya tidak
+   pecah per-karakter / menumpuk. Cetak/PDF tidak disentuh (pakai @media print). */
+@media screen{
+  .banding-tabel td:first-child{white-space:normal;overflow-wrap:normal;word-break:normal;padding-right:10px}
+  .banding-tabel td:last-child{white-space:nowrap;overflow-wrap:normal;word-break:normal;text-align:right}
+}
 @media(max-width:520px){
   .banding-kolom{flex:1 0 200px;padding:10px}
   .banding-tabel{font-size:11px}
@@ -2155,7 +2175,7 @@ table td{border-color:#E1DDD3!important}
 
 /* Layar sangat sempit: kolom banding tetap terbaca. */
 @media(max-width:400px){
-  .banding-kolom{flex:0 0 172px;padding:9px}
+  .banding-kolom{flex:0 0 auto;min-width:172px;max-width:280px;padding:9px}
   .banding-judul{font-size:13px}
   .banding-tabel{font-size:10.5px}
   .banding-premi b{font-size:14px}

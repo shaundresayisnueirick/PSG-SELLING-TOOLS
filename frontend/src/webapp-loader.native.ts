@@ -10,7 +10,7 @@ import { storage } from "@/src/utils/storage";
 import bundle from "@/src/webapp/webapp-bundle.json";
 
 // Bump this whenever the bundled web assets change so devices re-extract.
-const VERSION = "37.5-apk-1";
+const VERSION = "37.5-apk-2";
 const VKEY = "psg.webapp.version.v1";
 
 const B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
